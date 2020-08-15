@@ -1,7 +1,8 @@
 # focal
 language: android
 #services: docker
-dist: bionic
+dist: focal
+sudo: required
 
 env:
   global:
