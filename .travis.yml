@@ -1,7 +1,9 @@
 # focal
-#language: android
+# android packages only up to trusty
+# https://docs.travis-ci.com/user/languages/android/
+language: android
 #services: docker
-dist: focal
+dist: trusty # focal
 #sudo: required
 
 env:
