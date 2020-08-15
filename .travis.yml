@@ -69,7 +69,7 @@ before_install:
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
   - java -version
-  - update-java-alternatives --list
+  - update-java-alternatives --list || true
   - export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"
   # ndk
   - sdkmanager --list
