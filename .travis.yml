@@ -37,6 +37,8 @@ addons:
       - libclang1-10
       - clang-format-10
       - clangd-10
+      # openjdk for java (android studio sdkmanager)
+      - default-jdk
       # normal
       - p7zip-full
 
@@ -66,9 +68,11 @@ before_install:
 
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
+  - java -version
   # ndk
+  - sdkmanager --list
   - echo y | sdkmanager 'ndk-bundle'
-  - echo y | sdkmanager 'cmake;3.6.3155560'
+  #- echo y | sdkmanager 'cmake;3.6.3155560'
   - export ANDROID_HOME=$HOME/android/sdk
   - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle  
   # rustup
