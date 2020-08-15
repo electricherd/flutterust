@@ -1,8 +1,8 @@
 # focal
-language: android
+#language: android
 #services: docker
 dist: focal
-sudo: required
+#sudo: required
 
 env:
   global:
