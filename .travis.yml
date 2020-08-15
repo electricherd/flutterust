@@ -33,7 +33,6 @@ addons:
       - libclang-10-dev
       - libclang1-10
       - clang-format-10
-      - python-clang-10
       - clangd-10
       # normal
       - p7zip-full
