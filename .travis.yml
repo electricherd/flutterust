@@ -1,8 +1,9 @@
 # 
 # https://docs.travis-ci.com/user/languages/android/
 # android only up to trusty
-# rust up to bionic
-language: dart
+# rust only up to bionic
+# dart only up to xenial
+#language: dart
 dist: focal
 
 env:
