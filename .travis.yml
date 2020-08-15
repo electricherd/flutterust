@@ -9,18 +9,36 @@ dist: trusty # focal
 env:
   global:
     - CRATE_NAME=audiofinder
-    - UBUNTU_VER=LTS_20.04
-
-# flutterust only on nightly
-# rust: nightly
+    - UBUNTU_VER=LTS_14.04    
+#    - UBUNTU_VER=LTS_20.04
 
 addons:
   apt:
     packages:
-      - lib32stdc++6
-      - lib32gcc1
-      - lib32gcc-s1
-      - libc6-i386
+      # additional for clang https://apt.llvm.org for focal (pop!_linux)
+      #- lib32stdc++6
+      #- lib32gcc1
+      #- lib32gcc-s1
+      #- libc6-i386
+      # clang llvm (trusty version 10 instead of 11)
+      - libllvm-10-ocaml-dev
+      - libllvm10
+      - llvm-10
+      - llvm-10-dev
+      - llvm-10-doc
+      - llvm-10-examples
+      - llvm-10-runtime
+      # clang clan
+      - clang-10
+      - clang-tools-10
+      - clang-10-doc
+      - libclang-common-10-dev
+      - libclang-10-dev
+      - libclang1-10
+      - clang-format-10
+      - python-clang-10
+      - clangd-10
+      # normal
       - p7zip-full
 
 
