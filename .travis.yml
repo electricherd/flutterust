@@ -72,6 +72,7 @@ install:
   - update-java-alternatives --list || true
   - export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"
   - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
+  - export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
   - export SDKMANAGER_OPTS="--add-modules java.se.ee"
   # ndk
   - sdkmanager --list
