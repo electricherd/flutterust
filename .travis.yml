@@ -57,16 +57,30 @@ cache:
 before_script:
   - env
 
+before_install:
+ - wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O $HOME/android-sdk.tgz
+ - mkdir android
+ - unzip android-sdk.tgz -d android/sdk
+ - export PATH=$PATH:./android/sdk/tools:./android/sdk/tools/bin
+
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
+  # ndk
+  - echo y | sdkmanager 'ndk-bundle'
+  #- echo y | sdkmanager 'cmake;3.6.3155560'
+  - export ANDROID_HOME=./android/sdk
+  - export ANDROID_NDK_HOME=./android/sdk/ndk-bundle  
+  # rustup
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ./rustup.sh
   - sh ./rustup.sh -y
   - git clone https://github.com/flutter/flutter.git -b stable
   - ./flutter/bin/flutter doctor
-  # rustup
+  # rustup targets
   - source ~/.cargo/env || true  
   - rustup default nightly
   - rustup target add aarch64-linux-android wasm32-unknown-unknown armv7-linux-androideabi i686-linux-android x86_64-linux-android
+  - rustup target add aarch64-apple-ios x86_64-apple-ios
+  # cargo programs
   - cargo install --force cargo-lipo
   - cargo install --force cargo-make
   - cargo install --force cargo-ndk
