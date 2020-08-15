@@ -58,18 +58,19 @@ before_script:
   - env
 
 before_install:
+ - cd $HOME
  - wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O $HOME/android-sdk.tgz
- - mkdir android
+ - mkdir -p android
  - unzip android-sdk.tgz -d android/sdk
- - export PATH=$PATH:./android/sdk/tools:./android/sdk/tools/bin
+ - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin
 
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
   # ndk
   - echo y | sdkmanager 'ndk-bundle'
-  #- echo y | sdkmanager 'cmake;3.6.3155560'
-  - export ANDROID_HOME=./android/sdk
-  - export ANDROID_NDK_HOME=./android/sdk/ndk-bundle  
+  - echo y | sdkmanager 'cmake;3.6.3155560'
+  - export ANDROID_HOME=$HOME/android/sdk
+  - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle  
   # rustup
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ./rustup.sh
   - sh ./rustup.sh -y
