@@ -48,8 +48,8 @@ cache:
     - "$HOME/.gradle/wrapper/"
     - "$HOME/.pub-cache"       # flutter
 
-before_install:
-  - echo y | sdkmanager "ndk-bundle"
+#before_install:
+#  - echo y | sdkmanager "ndk-bundle"
 
 before_script:
   - env
