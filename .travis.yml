@@ -1,7 +1,8 @@
-# focal
-# android packages only up to trusty
+# 
 # https://docs.travis-ci.com/user/languages/android/
-languages: dart rustup
+# android only up to trusty
+# rust up to bionic
+language: dart
 dist: focal
 
 env:
