@@ -4,12 +4,20 @@
 # rust only up to bionic
 # dart only up to xenial
 #language: dart
-dist: focal
-
 env:
   global:
     - CRATE_NAME=audiofinder
-    - UBUNTU_VER=LTS_20.04
+
+jobs:
+  include:
+    - os : linux
+      dist: focal
+      name: job_build_linux_20_04_nightly
+      env: VER=LTS_20.04 TARGET=x86_64-unknown-linux-gnu
+    - os : osx
+      osx_image: xcode12
+      name: job_macos10_15_nightly
+      env: VER=MacOS10.15 TARGET=aarch64-apple-ios
 
 
 addons:
@@ -28,7 +36,7 @@ addons:
       - llvm-10-doc
       - llvm-10-examples
       - llvm-10-runtime
-      # clang clan
+      # clang clang
       - clang-10
       - clang-tools-10
       - clang-10-doc
@@ -39,6 +47,13 @@ addons:
       - clangd-10
       # normal
       - p7zip-full
+  homebrew:
+    packages:
+      # clang
+      - llvm
+      # normal
+      - p7zip
+
 
 
 before_cache:
@@ -58,6 +73,7 @@ before_script:
   - env
 
 before_install:
+ - export OLD_PATH=$PWD
  - cd $HOME
  - wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O $HOME/android-sdk.tgz
  - mkdir -p android
@@ -71,10 +87,11 @@ install:
   - sh ./rustup.sh -y
   - git clone https://github.com/flutter/flutter.git -b stable
   - ./flutter/bin/flutter doctor
-  # rustup targets
+  # rustup setup: source and nightly (flutterust only with nightly features)
   - source ~/.cargo/env || true  
   - rustup default nightly
   - rustup target add aarch64-linux-android wasm32-unknown-unknown armv7-linux-androideabi i686-linux-android x86_64-linux-android
+  # only for ios
   - rustup target add aarch64-apple-ios x86_64-apple-ios
   # cargo programs
   - cargo install --force cargo-lipo
@@ -86,4 +103,6 @@ install:
   - cargo install --force dart-bindgen --features cli
 
 script:
+  - echo $OLD_PATH
+  - cd $OLD_PATH
   - cargo make
