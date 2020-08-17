@@ -141,7 +141,7 @@ script:
   - cargo make
   - cargo build
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
-       flutter build appbundle;
+       ./flutter/bin/flutter build appbundle;
     else
-       flutter build ios;
+       ./flutter/bin/flutter build ios;
     fi  
