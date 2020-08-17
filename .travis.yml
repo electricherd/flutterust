@@ -98,6 +98,7 @@ before_install:
  # set paths
  - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin
  - export ANDROID_SDK_ROOT=$HOME/android/sdk
+ - export ANDROID_HOME=$HOME/android/sdk
  # java 8 is 1.8, 11 is 1.11 on macos-travis maybe $HOME/openjdk11?
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
       export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"; 
@@ -106,8 +107,10 @@ before_install:
    fi
  - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
  - export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions"
+ - java -version
  - sdkmanager --list
  - echo y | sdkmanager 'ndk-bundle' 
+ - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle   
  # flutter
  - git clone https://github.com/flutter/flutter.git -b stable
  - ./flutter/bin/flutter config --no-analytics  
