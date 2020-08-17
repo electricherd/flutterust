@@ -85,7 +85,7 @@ before_install:
  - cd $HOME
  # download specific version
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-       wget "https://dl.google.com/android/repository/sdk-tools-linux-$ID_ANDROID_SDK_TOOLS.zip" -O $HOME/android-sdk.tgz;
+       wget "https://dl.google.com/android/repository/sdk-tools-linux-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz;
    else
        wget "https://dl.google.com/android/repository/sdk-tools-darwin-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz;
    fi
@@ -98,12 +98,12 @@ before_install:
  # set paths
  - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin
  - export ANDROID_SDK_ROOT=$HOME/android/sdk
+ # java 8 is 1.8, 11 is 1.11
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"; 
+      export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"; 
    fi
  - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
- - export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
- - export SDKMANAGER_OPTS="--add-modules java.se.ee" 
+ - export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions"
  - sdkmanager --list
  - echo y | sdkmanager 'ndk-bundle' 
  # flutter
