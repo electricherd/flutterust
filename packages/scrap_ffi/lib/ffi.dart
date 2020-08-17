@@ -1,8 +1,8 @@
 /// bindings for `libscrap`
 
-import 'dart:io';
 import 'package:ffi/ffi.dart' as ffi;
 import 'dart:ffi';
+import 'dart:io';
 
 // ignore_for_file: unused_import, camel_case_types, non_constant_identifier_names
 final DynamicLibrary _dl = _open();

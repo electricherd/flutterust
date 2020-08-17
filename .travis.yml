@@ -57,11 +57,9 @@ addons:
       - llvm
       # normal
       - p7zip
+    taps: homebrew/cask-versions
     casks:
       - java8
-
-
-
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -89,6 +87,7 @@ before_install:
    else
        wget "https://dl.google.com/android/repository/sdk-tools-darwin-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz;
    fi
+ - echo $JAVA_HOME
  - mkdir -p android
  - unzip android-sdk.tgz -d android/sdk
  # licences (maybe platform specific, this is linux)
@@ -116,7 +115,6 @@ before_install:
  - ./flutter/bin/flutter config --no-analytics  
  - ./flutter/bin/flutter doctor
 
-
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
   # rustup
@@ -141,3 +139,9 @@ script:
   - echo $OLD_PATH
   - cd $OLD_PATH
   - cargo make
+  - cargo build
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+       flutter build appbundle;
+    else
+       flutter build ios;
+    fi  
