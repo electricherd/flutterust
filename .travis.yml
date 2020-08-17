@@ -20,25 +20,23 @@ addons:
       #- lib32gcc1
       #- lib32gcc-s1
       #- libc6-i386
-      # clang llvm (focal version 10 instead of 11)
-      - libllvm-10-ocaml-dev
-      - libllvm10
-      - llvm-10
-      - llvm-10-dev
-      - llvm-10-doc
-      - llvm-10-examples
-      - llvm-10-runtime
+      # clang llvm (focal version 11)
+      - libllvm-11-ocaml-dev
+      - libllvm11
+      - llvm-11
+      - llvm-11-dev
+      - llvm-11-doc
+      - llvm-11-examples
+      - llvm-11-runtime
       # clang clan
-      - clang-10
-      - clang-tools-10
-      - clang-10-doc
-      - libclang-common-10-dev
-      - libclang-10-dev
-      - libclang1-10
-      - clang-format-10
-      - clangd-10
-      # openjdk for java (android studio sdkmanager)
-      - default-jdk
+      - clang-11
+      - clang-tools-11
+      - clang-11-doc
+      - libclang-common-11-dev
+      - libclang-11-dev
+      - libclang1-11
+      - clang-format-11
+      - clangd-11
       # normal
       - p7zip-full
 
@@ -68,18 +66,6 @@ before_install:
 
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
-  - java -version
-  - update-java-alternatives --list || true
-  - export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"
-  - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
-  - export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
-  - export SDKMANAGER_OPTS="--add-modules java.se.ee"
-  # ndk
-  - sdkmanager --list
-  - echo y | sdkmanager 'ndk-bundle'
-  #- echo y | sdkmanager 'cmake;3.6.3155560'
-  - export ANDROID_HOME=$HOME/android/sdk
-  - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle  
   # rustup
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ./rustup.sh
   - sh ./rustup.sh -y
