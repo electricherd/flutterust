@@ -7,6 +7,7 @@
 env:
   global:
     - CRATE_NAME=audiofinder
+    - ID_ANDROID_SDK_TOOLS=3859397
 
 jobs:
   include:
@@ -45,6 +46,8 @@ addons:
       - libclang1-10
       - clang-format-10
       - clangd-10
+      # java
+      - default-jdk
       # normal
       - p7zip-full
   homebrew:
@@ -53,6 +56,9 @@ addons:
       - llvm
       # normal
       - p7zip
+    casks:
+      - java8
+
 
 
 
@@ -74,19 +80,36 @@ before_script:
 
 before_install:
  - export OLD_PATH=$PWD
+ - echo $OLD_PATH
  - cd $HOME
- - wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O $HOME/android-sdk.tgz
+ # download specific version
+ - if [ $TRAVIS_OS_NAME = linux ]; wget https://dl.google.com/android/repository/sdk-tools-linux-${ID_ANDROID_SDK_TOOLS}.zip -O $HOME/android-sdk.tgz; else wget https://dl.google.com/android/repository/sdk-tools-darwin-${ID_ANDROID_SDK_TOOLS}.zip -O $HOME/android-sdk.tgz; fi
  - mkdir -p android
  - unzip android-sdk.tgz -d android/sdk
+ # licences (maybe platform specific, this is linux)
+ - mkdir -p android/sdk/licenses
+ - printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android/sdk/licenses/android-sdk-license
+ - printf "84831b9409646a918e30573bab4c9c91346d8abd" > android/sdk/licenses/android-sdk-preview-license
+ # set paths
  - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin
+ - export ANDROID_SDK_ROOT=$HOME/android/sdk
+ - if [ $TRAVIS_OS_NAME = linux ]; export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"; fi
+ - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
+ - export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+ - export SDKMANAGER_OPTS="--add-modules java.se.ee" 
+ - sdkmanager --list
+ - echo y | sdkmanager 'ndk-bundle' 
+ # flutter
+ - git clone https://github.com/flutter/flutter.git -b stable
+ - ./flutter/bin/flutter config --no-analytics  
+ - ./flutter/bin/flutter doctor
+
 
 install:
   - echo $CRATE_NAME-$target-$TRAVIS_TAG
   # rustup
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ./rustup.sh
   - sh ./rustup.sh -y
-  - git clone https://github.com/flutter/flutter.git -b stable
-  - ./flutter/bin/flutter doctor
   # rustup setup: source and nightly (flutterust only with nightly features)
   - source ~/.cargo/env || true  
   - rustup default nightly
