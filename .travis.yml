@@ -59,7 +59,7 @@ addons:
       - p7zip
     taps: homebrew/cask-versions
     casks:
-      - java8
+      - adoptopenjdk8
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -101,7 +101,7 @@ before_install:
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
       export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"; 
    else
-      export JAVA_HOME="$(/usr/libexec/java_home -v1.8)" && /usr/libexec/java_home;
+      export JAVA_HOME="$(/usr/libexec/java_home -v1.8)";
    fi
  - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
  - export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions"
