@@ -1,4 +1,5 @@
-# 
+# USE https://config.travis-ci.com/explore to check travis.yml
+#
 # https://docs.travis-ci.com/user/languages/android/
 # android only up to trusty
 # rust only up to bionic
@@ -83,7 +84,11 @@ before_install:
  - echo $OLD_PATH
  - cd $HOME
  # download specific version
- - if [ $TRAVIS_OS_NAME = linux ]; wget "https://dl.google.com/android/repository/sdk-tools-linux-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz; else wget "https://dl.google.com/android/repository/sdk-tools-darwin-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz; fi
+ - if [ $TRAVIS_OS_NAME == "linux" ]; then
+       wget "https://dl.google.com/android/repository/sdk-tools-linux-$ID_ANDROID_SDK_TOOLS.zip" -O $HOME/android-sdk.tgz;
+   else
+       wget "https://dl.google.com/android/repository/sdk-tools-darwin-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz;
+   fi
  - mkdir -p android
  - unzip android-sdk.tgz -d android/sdk
  # licences (maybe platform specific, this is linux)
@@ -93,7 +98,9 @@ before_install:
  # set paths
  - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin
  - export ANDROID_SDK_ROOT=$HOME/android/sdk
- - if [ $TRAVIS_OS_NAME = linux ]; export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"; fi
+ - if [ $TRAVIS_OS_NAME == "linux" ]; then
+      export JAVA_HOME="/usr/lib/jvm/java-1.11.0-openjdk-amd64"; 
+   fi
  - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
  - export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
  - export SDKMANAGER_OPTS="--add-modules java.se.ee" 
