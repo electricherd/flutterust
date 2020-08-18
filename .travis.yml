@@ -172,20 +172,26 @@ before_deploy:
   - cp ${APK_PATH}/base-arm64_v8a_2.apk ${CRATE_NAME}-arm64_v8a_2.apk  
   - cp ${APK_PATH}/base-armeabi_v7a.apk ${CRATE_NAME}-armeabi_v7a.apk    
   - cp ${APK_PATH}/base-armeabi_v7a_2.apk ${CRATE_NAME}-armeabi_v7a_2.apk      
-  - cp ${APK_PATH}/base-x86.apk ${CRATE_NAME}-x86.apk    
-  - cp ${APK_PATH}/base-x86_2.apk ${CRATE_NAME}-x86_2.apk      
-  - cp ${APK_PATH}/base-x86_64.apk ${CRATE_NAME}-x86_64.apk    
-  - cp ${APK_PATH}/base-x86_64_2.apk ${CRATE_NAME}-x86_64_2.apk      
-  - export RELEASE_APK_FILES=$(ls *.apk )
+  - cp ${APK_PATH}/base-x86.apk ${CRATE_NAME}-x86.apk
+  - cp ${APK_PATH}/base-x86_2.apk ${CRATE_NAME}-x86_2.apk
+  - cp ${APK_PATH}/base-x86_64.apk ${CRATE_NAME}-x86_64.apk
+  - cp ${APK_PATH}/base-x86_64_2.apk ${CRATE_NAME}-x86_64_2.apk
+  - export RELEASE_APK_FILES=$(ls *.apk)
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
 
 deploy:
-  # look at
   api_key: $gitHubToken
   overwrite: true
   file_glob: true
   file: 
-    - "*.apk"
+    - ${CRATE_NAME}-arm64_v8a.apk
+    - ${CRATE_NAME}-arm64_v8a_2.apk    
+    - ${CRATE_NAME}-armeabi_v7a.apk
+    - ${CRATE_NAME}-armeabi_v7a_2.apk    
+    - ${CRATE_NAME}-x86.apk
+    - ${CRATE_NAME}-x86_2.apk    
+    - ${CRATE_NAME}-x86_64.apk
+    - ${CRATE_NAME}-x86_64_2.apk    
   provider: releases
   skip_cleanup: true
   on:
