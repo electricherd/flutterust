@@ -137,23 +137,23 @@ install:
        rustup target add aarch64-apple-ios x86_64-apple-ios;
     fi
   # cargo programs 
-  - travis_wait 20 cargo install cargo-make
+  - cargo install cargo-make
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        cargo install cargo-ndk;
     else
-       travis_wait 20 cargo install cargo-lipo;
+       cargo install cargo-lipo;
     fi
-  - travis_wait 20 cargo install cargo-flutter
-  - travis_wait 20 cargo install wasm-bindgen-cli
-  - travis_wait 20 cargo install cbindgen
-  - travis_wait 20 cargo install dart-bindgen --features cli
+  - travis_wait cargo install cargo-flutter
+  - travis_wait cargo install wasm-bindgen-cli
+  - travis_wait cargo install cbindgen
+  - travis_wait cargo install dart-bindgen --features cli
 
 script:
   - echo $OLD_PATH
   - cd $OLD_PATH
   - cargo fetch
-  - travis_wait 20 cargo make
-  - travis_wait 20 cargo build
+  - cargo make
+  - travis_wait cargo build
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        $HOME/flutter/bin/flutter build appbundle;
     else
