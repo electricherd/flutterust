@@ -7,7 +7,7 @@
 #language: dart
 env:
   global:
-    - CRATE_NAME=audiofinder
+    - CRATE_NAME=flutterustee
     - ID_ANDROID_SDK_TOOLS=3859397
 
 jobs:
@@ -107,6 +107,9 @@ before_install:
  - export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions"
  - echo $JAVA_HOME 
  - java -version
+ # bundletool
+ - curl -s https://api.github.com/repos/google/bundletool/releases/latest | grep -oP '"browser_download_url": "\K(.*)(?=")' | xargs wget -O bundletool.jar
+ # sdkmanager
  - sdkmanager --list
  - echo y | sdkmanager 'ndk-bundle' 
  - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle   
@@ -123,16 +126,20 @@ install:
   # rustup setup: source and nightly (flutterust only with nightly features)
   - source ~/.cargo/env || true  
   - rustup default nightly
-  - rustup target add wasm32-unknown-unknown
+  #- rustup target add wasm32-unknown-unknown
+  # ios also: armv7-apple-ios i386-apple-ios
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android;
     else
        rustup target add aarch64-apple-ios x86_64-apple-ios;
     fi
-  # cargo programs
-  - cargo install --force cargo-lipo
-  - cargo install --force cargo-make
-  - cargo install --force cargo-ndk
+  # cargo programs 
+  - cargo install --force cargo-make  
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then
+       cargo install --force cargo-ndk;
+    else
+       cargo install --force cargo-lipo;
+    fi
   - cargo install --force cargo-flutter
   - cargo install --force wasm-bindgen-cli
   - cargo install --force cbindgen
@@ -148,3 +155,10 @@ script:
     else
        $HOME/flutter/bin/flutter build ios;
     fi
+
+before_deploy:    
+  - java -jar bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.zip
+  - mkdir -p artifacts  
+  - unzip $CRATE_NAME.zip -d artifacts
+  - ls -al artifacts
+
