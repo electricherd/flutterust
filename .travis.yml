@@ -113,11 +113,10 @@ before_install:
  - java -version
  # bundletool for ndk installation (only linux)
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -O bundletool.jar
-      # sdkmanager
-      sdkmanager --list
-      echo y | sdkmanager 'ndk-bundle' 
-      export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
+      curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -O bundletool.jar \
+      && sdkmanager --list \
+      && echo y | sdkmanager 'ndk-bundle' \
+      && export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
    fi
  # flutter
  - git clone https://github.com/flutter/flutter.git -b stable
