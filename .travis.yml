@@ -15,11 +15,11 @@ jobs:
     - os : linux
       dist: focal
       name: job_build_linux_20_04_nightly
-      env: VER=LTS_20.04 TARGET=x86_64-unknown-linux-gnu
+      env: VER=LTS_20.04
     - os : osx
       osx_image: xcode12
       name: job_macos10_15_nightly
-      env: VER=MacOS10.15 TARGET=aarch64-apple-ios
+      env: VER=MacOS10.15
 
 
 addons:
@@ -56,6 +56,7 @@ addons:
     packages:
       # clang
       - llvm
+      # bundletool
       # normal
       - jq
       - p7zip
@@ -122,7 +123,7 @@ before_install:
  - ./flutter/bin/flutter doctor
 
 install:
-  - echo $CRATE_NAME-$TARGET-$TRAVIS_TAG
+  - echo $CRATE_NAME-$TRAVIS_TAG
   # rustup
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ./rustup.sh
   - sh ./rustup.sh -y
@@ -143,7 +144,7 @@ install:
     else
        cargo install cargo-lipo;
     fi
-  - travis_wait cargo install cargo-flutter
+  - travis_wait 30 cargo install cargo-flutter
   - travis_wait cargo install wasm-bindgen-cli
   - travis_wait cargo install cbindgen
   - travis_wait cargo install dart-bindgen --features cli
@@ -161,10 +162,21 @@ script:
     fi
 
 before_deploy:    
-  - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.apks
-  - mkdir -p artifacts  
+  - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.apks --overwrite
+  - export APK_PATH=artifacts/splits  
+  - export DEPLOY_PATH=artifacts/deploy  
+  - mkdir -p artifacts/deploy
   - unzip $CRATE_NAME.apks -d artifacts
-  - export RELEASE_APK_FILES=$(ls artifacts/*.apk)
+  # copy only theses yet
+  - cp ${APK_PATH}/base-arm64_v8a.apk ${DEPLOY_PATH}/${CRATE_NAME}-arm64_v8a.apk
+  - cp ${APK_PATH}/base-arm64_v8a_2.apk ${DEPLOY_PATH}/${CRATE_NAME}-arm64_v8a_2.apk  
+  - cp ${APK_PATH}/base-armeabi_v7a.apk ${DEPLOY_PATH}/${CRATE_NAME}-armeabi_v7a.apk    
+  - cp ${APK_PATH}/base-armeabi_v7a_2.apk ${DEPLOY_PATH}/${CRATE_NAME}-armeabi_v7a_2.apk      
+  - cp ${APK_PATH}/base-x86.apk ${DEPLOY_PATH}/${CRATE_NAME}-x86.apk    
+  - cp ${APK_PATH}/base-x86_2.apk ${DEPLOY_PATH}/${CRATE_NAME}-x86_2.apk      
+  - cp ${APK_PATH}/base-x86_64.apk ${DEPLOY_PATH}/${CRATE_NAME}-x86_64.apk    
+  - cp ${APK_PATH}/base-x86_64_2.apk ${DEPLOY_PATH}/${CRATE_NAME}-x86_64_2.apk      
+  - export RELEASE_APK_FILES=$(ls ${DEPLOY_PATH}/*.apk)
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
 
 deploy:
