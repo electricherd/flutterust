@@ -159,7 +159,7 @@ script:
     fi
 
 before_deploy:    
-  - java -jar bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.zip
+  - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.zip
   - mkdir -p artifacts  
   - unzip $CRATE_NAME.zip -d artifacts
   - export RELEASE_APK_FILES=$(ls artifacts/*.apk)
