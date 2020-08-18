@@ -121,7 +121,7 @@ before_install:
  - ./flutter/bin/flutter doctor
 
 install:
-  - echo $CRATE_NAME-$target-$TRAVIS_TAG
+  - echo $CRATE_NAME-$TARGET-$TRAVIS_TAG
   # rustup
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > ./rustup.sh
   - sh ./rustup.sh -y
@@ -162,5 +162,27 @@ before_deploy:
   - java -jar bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.zip
   - mkdir -p artifacts  
   - unzip $CRATE_NAME.zip -d artifacts
-  - ls -al artifacts
+  - export RELEASE_APK_FILES=$(ls artifacts/*.apk)
+  - echo "deploying $RELEASE_APK_FILES to GitHub releases"
+  
+deploy:
+  # look at
+  api_key: $gitHubToken
+  overwrite: true
+  file_glob: true
+  file: 
+    - "${RELEASE_APK_FILES}"
+  provider: releases
+  skip_cleanup: true
+  on:
+    repo: electricherd/flutterust
+    #tags: true
+    branches:
+      only:
+        # release tags
+        #- /^v\d+\.\d+\.\d+.*$/
+        - master
 
+ignore:
+  - README.md
+  - README-release.md
