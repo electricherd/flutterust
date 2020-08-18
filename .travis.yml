@@ -69,9 +69,10 @@ before_cache:
 cache:
   cargo: true
   directories:
-    - "$HOME/.gradle/caches/"
-    - "$HOME/.gradle/wrapper/"
+    - "$HOME/.gradle/caches"
+    - "$HOME/.gradle/wrapper"
     - "$HOME/.pub-cache"       # flutter
+    - "$HOME/.cargo"
 
 #before_install:
 #  - echo y | sdkmanager "ndk-bundle"
@@ -136,22 +137,23 @@ install:
        rustup target add aarch64-apple-ios x86_64-apple-ios;
     fi
   # cargo programs 
-  - cargo install cargo-make
+  - travis_wait 20 cargo install cargo-make
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        cargo install cargo-ndk;
     else
-       cargo install cargo-lipo;
+       travis_wait 20 cargo install cargo-lipo;
     fi
-  - cargo install cargo-flutter
-  - cargo install wasm-bindgen-cli
-  - cargo install cbindgen
-  - cargo install dart-bindgen --features cli
+  - travis_wait 20 cargo install cargo-flutter
+  - travis_wait 20 cargo install wasm-bindgen-cli
+  - travis_wait 20 cargo install cbindgen
+  - travis_wait 20 cargo install dart-bindgen --features cli
 
 script:
   - echo $OLD_PATH
   - cd $OLD_PATH
-  - cargo make
-  - cargo build
+  - cargo fetch
+  - travis_wait 20 cargo make
+  - travis_wait 20 cargo build
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        $HOME/flutter/bin/flutter build appbundle;
     else
