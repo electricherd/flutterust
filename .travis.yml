@@ -136,16 +136,16 @@ install:
        rustup target add aarch64-apple-ios x86_64-apple-ios;
     fi
   # cargo programs 
-  - cargo install --force cargo-make  
+  - cargo install cargo-make || true
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
-       cargo install --force cargo-ndk;
+       cargo install cargo-ndk || true;
     else
-       cargo install --force cargo-lipo;
+       cargo install cargo-lipo || true;
     fi
-  - cargo install --force cargo-flutter
-  - cargo install --force wasm-bindgen-cli
-  - cargo install --force cbindgen
-  - cargo install --force dart-bindgen --features cli
+  - cargo install cargo-flutter || true
+  - cargo install wasm-bindgen-cli || true
+  - cargo install cbindgen || true
+  - cargo install dart-bindgen --features cli || true
 
 script:
   - echo $OLD_PATH
@@ -164,7 +164,7 @@ before_deploy:
   - unzip $CRATE_NAME.zip -d artifacts
   - export RELEASE_APK_FILES=$(ls artifacts/*.apk)
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
-  
+
 deploy:
   # look at
   api_key: $gitHubToken
