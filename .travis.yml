@@ -161,9 +161,9 @@ script:
     fi
 
 before_deploy:    
-  - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.zip
+  - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.apks
   - mkdir -p artifacts  
-  - unzip $CRATE_NAME.zip -d artifacts
+  - unzip $CRATE_NAME.apks -d artifacts
   - export RELEASE_APK_FILES=$(ls artifacts/*.apk)
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
 
