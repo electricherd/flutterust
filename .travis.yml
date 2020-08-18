@@ -111,13 +111,12 @@ before_install:
  - export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions"
  - echo $JAVA_HOME 
  - java -version
- # bundletool for ndk installation (only linux)
- - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -O bundletool.jar \
-      && sdkmanager --list \
-      && echo y | sdkmanager 'ndk-bundle' \
-      && export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
-   fi
+  # bundletool
+ - curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -O bundletool.jar
+ # sdkmanager
+ - sdkmanager --list
+ - echo y | sdkmanager 'ndk-bundle'
+ - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle
  # flutter
  - git clone https://github.com/flutter/flutter.git -b stable
  - ./flutter/bin/flutter config --no-analytics  
@@ -149,14 +148,14 @@ install:
   - travis_wait 30 cargo install cargo-flutter
   - travis_wait cargo install wasm-bindgen-cli
   - travis_wait cargo install cbindgen
-  - travis_wait cargo install dart-bindgen --features cli
+  - travis_wait 30 cargo install dart-bindgen --features cli
 
 script:
   - echo $OLD_PATH
   - cd $OLD_PATH
   - cargo fetch
   - cargo make
-  - travis_wait cargo build
+  - travis_wait 30 cargo build
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        $HOME/flutter/bin/flutter build appbundle;
     else
