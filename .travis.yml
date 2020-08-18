@@ -147,7 +147,7 @@ install:
   # cargo flutter had 1149 sec for iOS!!!
   - travis_wait 30 cargo install cargo-flutter
   - travis_wait 30 cargo install wasm-bindgen-cli
-  - travis_wait cargo install cbindgen
+  - travis_wait 30 cargo install cbindgen
   - travis_wait 30 cargo install dart-bindgen --features cli
 
 script:
@@ -180,7 +180,7 @@ before_deploy:
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
 
 deploy:
-  api_key: $gitHubToken
+  api_key: $gitHubTokenflrs
   overwrite: true
   file_glob: true
   file: 
