@@ -108,7 +108,7 @@ before_install:
  - echo $JAVA_HOME 
  - java -version
  # bundletool
- - curl -s https://api.github.com/repos/google/bundletool/releases/latest | grep -oP '"browser_download_url": "\K(.*)(?=")' | xargs wget -O bundletool.jar
+ - curl -s https://api.github.com/repos/google/bundletool/releases/latest | grep -oP "\"browser_download_url\": \"\K(.*)(?=\")" | xargs wget -O bundletool.jar
  # sdkmanager
  - sdkmanager --list
  - echo y | sdkmanager 'ndk-bundle' 
