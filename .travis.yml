@@ -130,8 +130,8 @@ before_install:
       mv -f wasm-bindgen $HOME/bin;
       mv -f wasm2es6js $HOME/bin;
    fi
- # flutte
-r - git clone https://github.com/flutter/flutter.git -b stable
+ # flutter
+ - git clone https://github.com/flutter/flutter.git -b stable
  - ./flutter/bin/flutter config --no-analytics  
  - ./flutter/bin/flutter doctor
 
