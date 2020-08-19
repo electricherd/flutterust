@@ -56,8 +56,8 @@ addons:
     packages:
       # clang
       - llvm
-      # bundletool is there version ???
-      - bundletool
+      # bundletool not need for ios build (only if apk would be build on ios, too)
+      # bundletool
       # normal
       - jq
       - p7zip
@@ -113,23 +113,21 @@ before_install:
  - echo $JAVA_HOME 
  - java -version
  # specific
- # android:
- #   - bundletool (we don't reach it in ios build anyhow yet)
- # ios:
+ # "linux":
+ #   - bundletool
+ #   - ndk for linux
+ # "osx":
  #   - wasm-bindgen as binary for ios to not build it
- - if [ $TRAVIS_OS_NAME != "linux" ]; then 
+ - if [ $TRAVIS_OS_NAME == "linux" ]; then 
       curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
+      sdkmanager --list;
+      echo y | sdkmanager 'ndk-bundle';
+      export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
    else
       curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
       tar -xvzf wasm-bindgen-apple-darwin.tgz --strip=1;
       mv -f wasm-bindgen $HOME/bin;
       mv -f wasm2es6js $HOME/bin;
-   fi
- # ndk for linux
- - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      sdkmanager --list;
-      echo y | sdkmanager 'ndk-bundle';
-      export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
    fi
  # flutter
  - git clone https://github.com/flutter/flutter.git -b stable
@@ -160,7 +158,7 @@ install:
     else
        cargo install cargo-lipo;
        travis_wait 30 cargo install cbindgen;
-       echo "no build wasm-bindgen used as binary"
+       echo "no build wasm-bindgen used as binary";
     fi
   #
   - travis_wait 30 cargo install dart-bindgen --features cli
@@ -179,8 +177,12 @@ script:
        $HOME/flutter/bin/flutter build ios;
     fi
 
-before_deploy:    
-  - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME-universal.apks --overwrite --mode=universal
+before_deploy:
+  - if [ $TRAVIS_OS_NAME == "osx" ]; then
+       bundletool build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME-universal.apks --overwrite --mode=universal;
+    else
+       java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME-universal.apks --overwrite --mode=universal;
+    fi
   - export APK_PATH=artifacts
   - mkdir -p $APK_PATH/universal
   - unzip $CRATE_NAME-universal.apks -d $APK_PATH/universal
