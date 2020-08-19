@@ -120,7 +120,7 @@ before_install:
  #   - wasm-bindgen as binary for ios to not build it
  # !!!downloading from github can have a problem, see GITHUB_PAT!!!
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      curl -H "Authorization: token $GITHUB_PAT" "-s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
+      curl -H "Authorization: token $GITHUB_PAT" -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
       sdkmanager --list;
       echo y | sdkmanager 'ndk-bundle';
       export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
