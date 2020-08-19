@@ -118,14 +118,13 @@ before_install:
  #   - ndk for linux
  # "osx":
  #   - wasm-bindgen as binary for ios to not build it
- # !!!downloading from github can have a problem, see GITHUB_PAT!!!
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
-      curl -H "Authorization: token $GITHUB_PAT" -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
+      curl --header "Authorization: token ${GITHUB_PAT}" -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
       sdkmanager --list;
       echo y | sdkmanager 'ndk-bundle';
       export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
    else
-      curl -H "Authorization: token $GITHUB_PAT" -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
+      curl --header "Authorization: token ${GITHUB_PAT}" -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
       tar -xvzf wasm-bindgen-apple-darwin.tgz --strip=1;
       mv -f wasm-bindgen $HOME/bin;
       mv -f wasm2es6js $HOME/bin;
