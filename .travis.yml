@@ -113,12 +113,13 @@ before_install:
  - echo $JAVA_HOME 
  - java -version
  # specific
+ # android:
+ #   - bundletool (we don't reach it in ios build anyhow yet)
+ # ios:
+ #   - wasm-bindgen as binary for ios to not build it
  - if [ $TRAVIS_OS_NAME != "linux" ]; then 
-      # bundletool
       curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
    else
-      # binaries for ios
-      # 1) wasm-bindgen
       curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
       tar -xvzf wasm-bindgen-apple-darwin.tgz --strip=1;
       mv -f wasm-bindgen $HOME/bin;
