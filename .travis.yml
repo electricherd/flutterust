@@ -56,7 +56,8 @@ addons:
     packages:
       # clang
       - llvm
-      # bundletool
+      # bundletool is there version ???
+      - bundletool
       # normal
       - jq
       - p7zip
@@ -79,9 +80,11 @@ before_script:
   - env
 
 before_install:
+ - echo "building $TRAVIS_OS_NAME"
  - export OLD_PATH=$PWD
  - echo $OLD_PATH
  - cd $HOME
+ - mkdir -p $HOME/bin
  # download specific version
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
        wget "https://dl.google.com/android/repository/sdk-tools-linux-${ID_ANDROID_SDK_TOOLS}.zip" -O $HOME/android-sdk.tgz;
@@ -95,7 +98,7 @@ before_install:
  - printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > android/sdk/licenses/android-sdk-license
  - printf "84831b9409646a918e30573bab4c9c91346d8abd" > android/sdk/licenses/android-sdk-preview-license
  # set sdk paths
- - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin
+ - export PATH=$PATH:$HOME/android/sdk/tools:$HOME/android/sdk/tools/bin:$HOME/bin
  - export ANDROID_SDK_ROOT=$HOME/android/sdk
  - export ANDROID_HOME=$HOME/android/sdk
  # java 8 is 1.8, 11 is 1.11 but doesn't work with sdkmanager
@@ -103,13 +106,24 @@ before_install:
       export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"; 
    else
       export JAVA_HOME="$(/usr/libexec/java_home -v1.8)";
+      /usr/libexec/java_home;
    fi
  - export DEFAULT_JVM_OPTS="-Dcom.android.sdklib.toolsdir=%~dp0\.. -XX:+IgnoreUnrecognizedVMOptions"
  - export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions"
  - echo $JAVA_HOME 
  - java -version
- # bundletool
- - curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -O bundletool.jar;  
+ # specific
+ - if [ $TRAVIS_OS_NAME != "linux" ]; then 
+      # bundletool
+      curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
+   else
+      # binaries for ios
+      # 1) wasm-bindgen
+      curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
+      tar -xvzf wasm-bindgen-apple-darwin.tgz --strip=1;
+      mv -f wasm-bindgen $HOME/bin;
+      mv -f wasm2es6js $HOME/bin;
+   fi
  # ndk for linux
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
       sdkmanager --list;
@@ -140,13 +154,16 @@ install:
   - cargo install cargo-make
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
        cargo install cargo-ndk;
+       cargo install cbindgen;
+       cargo install wasm-bindgen-cli;
     else
        cargo install cargo-lipo;
+       travis_wait 30 cargo install cbindgen;
+       echo "no build wasm-bindgen used as binary"
     fi
-  # cargo flutter had 1149 sec for iOS!!!
-  - travis_wait 30 cargo install cbindgen  
-  - travis_wait 30 cargo install wasm-bindgen-cli
+  #
   - travis_wait 30 cargo install dart-bindgen --features cli
+  # cargo flutter had 1149 sec for iOS!!!  
   - travis_wait 30 cargo install cargo-flutter  
 
 script:
@@ -167,7 +184,7 @@ before_deploy:
   - mkdir -p $APK_PATH/universal
   - unzip $CRATE_NAME-universal.apks -d $APK_PATH/universal
   # the universal
-  - cp ${APK_PATH}/universal/universal.apk ${CRATE_NAME}.apk
+  - cp ${APK_PATH}/universal/universal.apk ${CRATE_NAME}-universal.apk
   #
   - export RELEASE_APK_FILES=$(ls *.apk)
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
@@ -177,7 +194,7 @@ deploy:
   overwrite: true
   file_glob: true
   file: 
-    - ${CRATE_NAME}.apk
+    - ${CRATE_NAME}-universal.apk
   provider: releases
   skip_cleanup: true
   on:
