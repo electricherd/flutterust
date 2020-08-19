@@ -118,7 +118,7 @@ before_install:
  #   - ndk for linux
  # "osx":
  #   - wasm-bindgen as binary for ios to not build it
- - curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq | grep browser_download_url; 
+ - curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq | grep browser_download_url
  - if [ $TRAVIS_OS_NAME == "linux" ]; then
       curl -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
       sdkmanager --list;
