@@ -112,17 +112,16 @@ before_install:
  - export JAVA_OPTS="-XX:+IgnoreUnrecognizedVMOptions"
  - echo $JAVA_HOME 
  - java -version
- # specific
- # "linux":
+
+ - sdkmanager --list;
+ - echo y | sdkmanager 'ndk-bundle';
+ - export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
+ # "linux": specific 
  #   - bundletool
- #   - ndk for linux
  # "osx":
  #   - wasm-bindgen as binary for ios to not build it
- - if [ $TRAVIS_OS_NAME == "linux" ]; then
+ - if [ $TRAVIS_OS_NAME == "linux" ]; then 
       curl --header "Authorization:\ token ${GITHUB_PAT}" -s https://api.github.com/repos/google/bundletool/releases/latest | jq -r '.assets[].browser_download_url' | xargs wget -q -O bundletool.jar;
-      sdkmanager --list;
-      echo y | sdkmanager 'ndk-bundle';
-      export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
    else
       curl --header "Authorization:\ token ${GITHUB_PAT}" -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
       tar -xvzf wasm-bindgen-apple-darwin.tgz --strip=1;
@@ -158,10 +157,10 @@ install:
     else
        cargo install cargo-lipo;
        travis_wait 30 cargo install cbindgen;
-       echo "no build wasm-bindgen used as binary";
+       echo "no build, wasm-bindgen used as binary";
     fi
   #
-  - travis_wait 30 cargo install dart-bindgen --features cli
+  - cargo install dart-bindgen --features cli
   # cargo flutter had 1149 sec for iOS!!!  
   - travis_wait 30 cargo install cargo-flutter  
 
