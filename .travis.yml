@@ -180,7 +180,7 @@ before_deploy:
   - echo "deploying $RELEASE_APK_FILES to GitHub releases"
 
 deploy:
-  api_key: $gitHubTokenflrs
+  api_key: $GitHubTokenToDeployFlRs
   overwrite: true
   file_glob: true
   file: 
