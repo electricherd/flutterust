@@ -124,6 +124,7 @@ before_install:
       echo y | sdkmanager 'ndk-bundle';
       export ANDROID_NDK_HOME=$HOME/android/sdk/ndk-bundle;
    else
+      curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | cat;
       curl -s https://api.github.com/repos/rustwasm/wasm-bindgen/releases/latest | jq -r '.assets[].browser_download_url' | grep apple-darwin | xargs wget -q -O wasm-bindgen-apple-darwin.tgz;
       tar -xvzf wasm-bindgen-apple-darwin.tgz --strip=1;
       mv -f wasm-bindgen $HOME/bin;
