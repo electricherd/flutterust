@@ -164,21 +164,21 @@ script:
 before_deploy:    
   - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME.apks --overwrite
   - java -jar $HOME/bundletool.jar build-apks --bundle=build/app/outputs/bundle/release/app-release.aab --output=$CRATE_NAME-universal.apks --overwrite --mode=universal
-  - export APK_PATH=artifacts/all
-  - mkdir -p artifacts/all/deploy
-  - mkdir -p artifacts/universal
-  - unzip $CRATE_NAME.apks -d $APK_PATH
-  - unzip $CRATE_NAME-universal.apks -d artifacts/universal
+  - export APK_PATH=artifacts
+  - mkdir -p $APK_PATH/all/deploy
+  - mkdir -p $APK_PATH/universal
+  - unzip $CRATE_NAME.apks -d $APK_PATH/all
+  - unzip $CRATE_NAME-universal.apks -d $APK_PATH/universal
   # copy only theses yet
   - ls artifacts
-  - cp ${APK_PATH}/splits/base-arm64_v8a.apk ${CRATE_NAME}-arm64_v8a.apk
-  - cp ${APK_PATH}/splits/base-arm64_v8a_2.apk ${CRATE_NAME}-arm64_v8a_2.apk  
-  - cp ${APK_PATH}/splits/base-armeabi_v7a.apk ${CRATE_NAME}-armeabi_v7a.apk    
-  - cp ${APK_PATH}/splits/base-armeabi_v7a_2.apk ${CRATE_NAME}-armeabi_v7a_2.apk      
-  - cp ${APK_PATH}/splits/base-x86.apk ${CRATE_NAME}-x86.apk
-  - cp ${APK_PATH}/splits/base-x86_2.apk ${CRATE_NAME}-x86_2.apk
-  - cp ${APK_PATH}/splits/base-x86_64.apk ${CRATE_NAME}-x86_64.apk
-  - cp ${APK_PATH}/splits/base-x86_64_2.apk ${CRATE_NAME}-x86_64_2.apk
+  - cp ${APK_PATH}/all/splits/base-arm64_v8a.apk ${CRATE_NAME}-arm64_v8a.apk
+  - cp ${APK_PATH}/all/splits/base-arm64_v8a_2.apk ${CRATE_NAME}-arm64_v8a_2.apk  
+  - cp ${APK_PATH}/all/splits/base-armeabi_v7a.apk ${CRATE_NAME}-armeabi_v7a.apk    
+  - cp ${APK_PATH}/all/splits/base-armeabi_v7a_2.apk ${CRATE_NAME}-armeabi_v7a_2.apk      
+  - cp ${APK_PATH}/all/splits/base-x86.apk ${CRATE_NAME}-x86.apk
+  - cp ${APK_PATH}/all/splits/base-x86_2.apk ${CRATE_NAME}-x86_2.apk
+  - cp ${APK_PATH}/all/splits/base-x86_64.apk ${CRATE_NAME}-x86_64.apk
+  - cp ${APK_PATH}/all/splits/base-x86_64_2.apk ${CRATE_NAME}-x86_64_2.apk
   # the universal
   - cp ${APK_PATH}/universal/universal.apk ${CRATE_NAME}.apk
   #
